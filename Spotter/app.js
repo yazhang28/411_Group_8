@@ -91,20 +91,34 @@ app.get('/callback', function(req, res) {
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
 
+
+                ////////////////////////////
                 var savedTracks = {
                     url: 'https://api.spotify.com/v1/me/tracks?offset=0&limit=50',   // https://developer.spotify.com/web-api/get-users-saved-tracks/
-                    headers: { 'Authorization': 'Bearer ' + access_token },
+                    headers: {'Authorization': 'Bearer ' + access_token},
                     json: true
                 };
 
-
-
-                request.get(savedTracks, function(error, response, body){
-                    //loop through first 50 tracks saved tracks
-                    for (var i = 0; i < 50; i++) {
-                        console.log(body.items[i].track.name);
-                    }
+                var numTracks = 204;
+                request.get(savedTracks, function (error, response, body){
+                    numTracks = body.total;
                 });
+
+                var count = 0;
+                while(count < 4) {
+                    request.get(savedTracks, function (error, response, body) {
+                        //loop through first 50 tracks saved tracks
+                        console.log("Current query: " + savedTracks.url);
+                        for (var i = 0; i < 50; i++) {
+                            console.log(body.items[i].track.name);
+                        }
+
+                        //savedTracks.url = body.next;
+                    });
+
+                    count++;
+                }
+                /////////////////////////////
 
                 var options = {
                     url: 'https://api.spotify.com/v1/me',
