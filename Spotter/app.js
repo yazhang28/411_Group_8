@@ -6,10 +6,13 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var userRoutes = require('./routes/users');
+var bodyParser = require('body-parser'); //for parsing body of a post
 
 var client_id = '75a1c00129ce4975a7c787d2658ec88c'; // Your client id
 var client_secret = 'f05003563d744c0495206ff85888aecf'; // Your client secret
 var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
+
 
 /**
  * Generates a random string containing numbers and letters
@@ -28,13 +31,11 @@ var generateRandomString = function(length) {
 
 var stateKey = 'spotify_auth_state';
 
-//test function for html
-function getTrack()
-{
-    document.write("Track name");
-}
-
 var app = express();
+
+app.use(bodyParser());
+
+app.use('/users', userRoutes);
 
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
@@ -99,21 +100,32 @@ app.get('/callback', function(req, res) {
                     json: true
                 };
 
-                var numTracks = 204;
+               /* var numTracks = 204;
                 request.get(savedTracks, function (error, response, body){
                     numTracks = body.total;
-                });
+                });*/
 
                 var count = 0;
-                while(count < 4) {
+                while(count < 1) {
                     request.get(savedTracks, function (error, response, body) {
-                        //loop through first 50 tracks saved tracks
-                        console.log("Current query: " + savedTracks.url);
-                        for (var i = 0; i < 50; i++) {
-                            console.log(body.items[i].track.name);
-                        }
 
-                        //savedTracks.url = body.next;
+                        //loop through first 50 tracks saved tracks
+                        for (var i = 0; i < 5; i++) {
+                            var title = body.items[i].track.name;
+                            var artist = body.items[i].track.artists[0].name;
+
+                            console.log(title + ", " + artist);
+
+                            var options = { method: 'POST',
+                                url: 'http://localhost:3000/users/db',
+                                form: { title: title, artist: artist} };
+
+                            request(options, function (error, response, body) {
+                                if (error) throw new Error(error);
+
+                                console.log(body);
+                             });
+                        }
                     });
 
                     count++;
@@ -125,11 +137,6 @@ app.get('/callback', function(req, res) {
                     headers: { 'Authorization': 'Bearer ' + access_token },
                     json: true
                 };
-
-                // use the access token to access the Spotify Web API
-                request.get(options, function(error, response, body) {
-                    //console.log(body);
-                });
 
                 // we can also pass the token to the browser to make requests from there
                 res.redirect('/#' +
@@ -146,6 +153,17 @@ app.get('/callback', function(req, res) {
         });
     }
 });
+
+var options = { method: 'POST',
+    url: 'http://localhost:3000/users/db',
+    form: { title: '000000', artist: 'blah blah', genre: 'rap' } };
+
+/*request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    console.log(body);
+});*/
+
 
 app.get('/refresh_token', function(req, res) {
 
