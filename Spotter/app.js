@@ -8,11 +8,11 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var userRoutes = require('./routes/users');
 var bodyParser = require('body-parser'); //for parsing body of a post
+var fs = require('fs');
 
 var client_id = '75a1c00129ce4975a7c787d2658ec88c'; // Your client id
-var client_secret = 'f05003563d744c0495206ff85888aecf'; // Your client secret
+var client_secret = fs.readFileSync('./../../key.txt', 'utf8'); // Client secret in local text file for security
 var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
-
 
 /**
  * Generates a random string containing numbers and letters
@@ -110,7 +110,7 @@ app.get('/callback', function(req, res) {
                     request.get(savedTracks, function (error, response, body) {
 
                         //loop through first 50 tracks saved tracks
-                        for (var i = 0; i < 5; i++) {
+                        for (var i = 0; i < 6; i++) {
                             var title = body.items[i].track.name;
                             var artist = body.items[i].track.artists[0].name;
 
