@@ -14,12 +14,6 @@ db/
 journal/
 .idea/
 
-*.xml
-
-# DB Stuff #
-############
-*.wt
-*.turtle
 
 # Packages #
 ############
@@ -49,16 +43,9 @@ journal/
 .Trashes
 ehthumbs.db
 Thumbs.db
-*.turtle
 
+*.turtle
 Spotter/data/db/WiredTiger.turtle
-
-*.turtle
-
 Spotter/data/db/index-1-6205445595898025365.wt
-
 *.wt
-
-*.wt
-
 *.xml
