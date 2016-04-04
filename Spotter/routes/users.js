@@ -5,8 +5,9 @@ mongoose.connect('mongodb://localhost/cs411a2');
 
 var Schema = mongoose.Schema;
 var track = new Schema({
-    title: String,
-    artist: String
+    artist: String,
+    twitter: String,
+    rank: String
 }, {
     strict: 'throw' //throw error when invalid track attempted
 });
@@ -23,7 +24,7 @@ router.post('/db', function(req, res, next) {
     tune1.save(function (err) {
         if (err) { console.log('error!');}
         else {
-            res.json({message: 'Track successfully posted'});
+            res.json({message: 'Successful posting!'});
         }
     });
 });
@@ -31,6 +32,14 @@ router.post('/db', function(req, res, next) {
 router.get('/db', function(req, res, next) {
 
     tune.find({}, function (err, results) {
+        res.json(results);
+    });
+
+});
+
+router.get('/db/:artist', function(req, res, next) {
+
+    tune.find({artist: req.params.artist}, function (err, results) {
         res.json(results);
     });
 
