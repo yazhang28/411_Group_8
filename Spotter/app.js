@@ -46,7 +46,7 @@ app.get('/login', function(req, res) {
     res.cookie(stateKey, state);
 
     // your application requests authorization
-    var scope = 'user-read-private user-read-email user-library-read'; //added library read access here
+    var scope = 'user-read-private user-read-email user-library-read user-top-read'; //added library read access here
     res.redirect('https://accounts.spotify.com/authorize?' +
         querystring.stringify({
             response_type: 'code',
@@ -105,7 +105,7 @@ app.get('/callback', function(req, res) {
                     numTracks = body.total;
                 });*/
 
-                var count = 0;
+                var count = 1;
                 while(count < 1) {
                     request.get(savedTracks, function (error, response, body) {
 
@@ -130,6 +130,33 @@ app.get('/callback', function(req, res) {
 
                     count++;
                 }
+
+
+
+                var topArtists = {
+                    url: 'https://api.spotify.com/v1/me/top/artists?limit=3',
+                    headers: {'Authorization': 'Bearer ' + access_token},
+                    json: true
+                };
+
+                request.get(topArtists, function (error, response, body) {
+                    top3 = body.items;
+
+                    for (var i = 0; i < 3; i++) {
+                        console.log(top3[i].name);
+                    }
+
+                    var artistPost = { method: 'POST',
+                        url: 'http://localhost:3000/users/db',
+                        form: { artist: "Jay-Z", twitter: "twitter.com/Jay", rank: "100"} };
+
+                    request(artistPost, function (error, response, body) {
+                        if (error) throw new Error(error);
+
+                        console.log(body);
+                    });
+
+                });
                 /////////////////////////////
 
                 var options = {

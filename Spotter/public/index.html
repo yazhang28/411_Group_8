@@ -1,5 +1,33 @@
 <!doctype html>
 <html>
+
+<!-- Angular (minified) -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+<!--Controllers for this page/app -->
+<script src="javascripts/controllers.js">
+</script>
+
+</body>
+
+
+
+<body ng-app="Spotter">
+<div ng-controller="spotterCtrl">
+  <h1>Welcome to Spotter!</h1>
+  <label>Artist Name:</label>
+  <input type="text" name="name" id="name" ng-model="name" value="name">
+  <button ng-click="getArtist(name)">Search</button>
+  <button ng-click="upper()">Upper test</button>
+  <br/>
+  <ul>
+    <li ng-repeat="user in users">Artist: {{user.artist}}     Rank: {{user.rank}}     Twitter: {{user.twitter}}</li>
+  </ul>
+</div>
+</body>
+
+
+
+
   <head>
     <title>Spotter</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -20,7 +48,7 @@
     <!--<input type="button" onclick="getTrack()" value="Click Me!">-->
     <div class="container">
       <div id="login">
-        <h1>Welcome to Spotter! Please login via Spotify.</h1>
+        <h1>Please login via Spotify.</h1>
         <a href="/login" class="btn btn-primary">Log in with Spotify</a>
       </div>
       <div id="loggedin">
