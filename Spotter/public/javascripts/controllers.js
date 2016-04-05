@@ -7,16 +7,26 @@ angular.module('Spotter', [])
     })
     .controller('spotterCtrl', function($scope, $http){
         $scope.hello = "Hello!";
+
         $scope.upper = function (){
             $scope.name = $scope.name.toUpperCase();
 
         };
+
         $scope.getArtist = function(name) {
             $http.get('http://localhost:3000/users/db/' + name)
                 .then(function(response){
-                    $scope.users = response.data;
+                    $scope.artists = response.data;
                 })
         };
+
+        $scope.getAllArtists = function() {
+            $http.get('http://localhost:3000/users/db')
+                .then(function(response){
+                    $scope.artists = response.data;
+                })
+        };
+
         $scope.createUser = function() {
             var request = {
                 method: 'post',

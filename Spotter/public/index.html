@@ -17,10 +17,11 @@
   <label>Artist Name:</label>
   <input type="text" name="name" id="name" ng-model="name" value="name">
   <button ng-click="getArtist(name)">Search</button>
+  <button ng-click="getAllArtists()">Show All Artists</button>
   <button ng-click="upper()">Upper test</button>
   <br/>
   <ul>
-    <li ng-repeat="user in users">Artist: {{user.artist}}     Rank: {{user.rank}}     Twitter: {{user.twitter}}</li>
+    <li ng-repeat="name in artists">Artist: {{name.artist}} Rank: {{name.rank}} Twitter: {{name.twitter}}</li>
   </ul>
 </div>
 </body>

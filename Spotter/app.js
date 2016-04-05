@@ -29,6 +29,7 @@ var generateRandomString = function(length) {
     return text;
 };
 
+
 var stateKey = 'spotify_auth_state';
 
 var app = express();
@@ -180,17 +181,6 @@ app.get('/callback', function(req, res) {
         });
     }
 });
-
-var options = { method: 'POST',
-    url: 'http://localhost:3000/users/db',
-    form: { title: '000000', artist: 'blah blah', genre: 'rap' } };
-
-/*request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-
-    console.log(body);
-});*/
-
 
 app.get('/refresh_token', function(req, res) {
 

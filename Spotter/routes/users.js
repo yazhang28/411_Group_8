@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var request = require('request');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/cs411a2');
+
+//command when mongo misbehaving:  brew services start mongodb
 
 var Schema = mongoose.Schema;
 var track = new Schema({
@@ -40,9 +43,52 @@ router.get('/db', function(req, res, next) {
 router.get('/db/:artist', function(req, res, next) {
 
     tune.find({artist: req.params.artist}, function (err, results) {
-        res.json(results);
-    });
 
+        //if not in DB already, go get it
+        if(Object.keys(results).length === 0) {
+            console.log(req.params.artist + " Not Found In DB");
+
+            var LastFmNode = require('lastfm').LastFmNode;
+
+            var lastfm = new LastFmNode({
+                api_key: '5a63919effc53c56e941641ca870cdc6',
+                secret: 'd2718405b34b3a86df99414f928af75c'
+            });
+
+
+            var infoRequest = lastfm.request("artist.getInfo", {
+                artist: req.params.artist,
+                handlers: {
+                    success: function(data) {
+                        console.log(data);
+
+                        var artistInfo = { method: 'POST',
+                            url: 'http://localhost:3000/users/db',
+                            form: { artist: data.artist.name, twitter: "twitter.com/NA", rank: data.artist.stats.listeners} };
+
+                        request(artistInfo, function (error, response, body) {
+                            if (error) throw new Error(error);
+
+                            console.log(body);
+                        });
+
+
+
+                    },
+                    error: function(error) {
+                        console.log("Error: " + error.message);
+                    }
+                }
+            });
+            //send request
+            //add to db
+            //find in db and return
+        }
+        else {
+            res.json(results);
+        }
+
+    });
 });
 
 module.exports = router;
