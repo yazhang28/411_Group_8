@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var mongoose = require('mongoose');
+var fs = require('fs');
 mongoose.connect('mongodb://localhost/cs411a2');
 
 //command when mongo misbehaving:  brew services start mongodb
@@ -15,6 +16,13 @@ var track = new Schema({
     strict: 'throw' //throw error when invalid track attempted
 });
 var tune = mongoose.model('tune', track);
+
+var LastFmNode = require('lastfm').LastFmNode;
+
+var lastfm = new LastFmNode({
+    api_key: '5a63919effc53c56e941641ca870cdc6',
+    secret: fs.readFileSync('./../../fm_key.txt', 'utf8') // Client secret in local text file for security
+});
 
 /* GET users listing. */
 
@@ -47,13 +55,6 @@ router.get('/db/:artist', function(req, res, next) {
         //if not in DB already, go get it
         if(Object.keys(results).length === 0) {
             console.log(req.params.artist + " Not Found In DB");
-
-            var LastFmNode = require('lastfm').LastFmNode;
-
-            var lastfm = new LastFmNode({
-                api_key: '5a63919effc53c56e941641ca870cdc6',
-                secret: 'd2718405b34b3a86df99414f928af75c'
-            });
 
 
             var infoRequest = lastfm.request("artist.getInfo", {

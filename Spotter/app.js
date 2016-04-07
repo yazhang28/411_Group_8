@@ -11,7 +11,7 @@ var bodyParser = require('body-parser'); //for parsing body of a post
 var fs = require('fs');
 
 var client_id = '75a1c00129ce4975a7c787d2658ec88c'; // Your client id
-var client_secret = fs.readFileSync('./../../key.txt', 'utf8'); // Client secret in local text file for security
+var client_secret = fs.readFileSync('./../../spotify_key.txt', 'utf8'); // Client secret in local text file for security
 var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
 
 /**
