@@ -93,18 +93,13 @@ app.get('/callback', function(req, res) {
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
 
-
+                console.log(access_token);
                 ////////////////////////////
                 var savedTracks = {
                     url: 'https://api.spotify.com/v1/me/tracks?offset=0&limit=50',   // https://developer.spotify.com/web-api/get-users-saved-tracks/
                     headers: {'Authorization': 'Bearer ' + access_token},
                     json: true
                 };
-
-               /* var numTracks = 204;
-                request.get(savedTracks, function (error, response, body){
-                    numTracks = body.total;
-                });*/
 
                 var count = 1;
                 while(count < 1) {
@@ -146,16 +141,6 @@ app.get('/callback', function(req, res) {
                     for (var i = 0; i < 3; i++) {
                         console.log(top3[i].name);
                     }
-
-                    var artistPost = { method: 'POST',
-                        url: 'http://localhost:3000/users/db',
-                        form: { artist: "Jay-Z", twitter: "twitter.com/Jay", rank: "100"} };
-
-                    request(artistPost, function (error, response, body) {
-                        if (error) throw new Error(error);
-
-                        console.log(body);
-                    });
 
                 });
                 /////////////////////////////

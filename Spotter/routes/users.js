@@ -3,7 +3,6 @@ var router = express.Router();
 var request = require('request');
 var mongoose = require('mongoose');
 var fs = require('fs');
-var SpotifyWebApi = require('spotify-web-api-node');
 mongoose.connect('mongodb://localhost/cs411a2');
 
 //command when mongo misbehaving:  brew services start mongodb
@@ -51,13 +50,82 @@ router.get('/db', function(req, res, next) {
 });
 
 
-router.get('/db/:artist', function(req, res, next) {
+router.post('/db/topTracks/:artist', function(req, res, next) {
+    var top50 = [];
+    var songsRequest = lastfm.request("artist.getTopTracks", {
+        artist: req.params.artist,
+        handlers: {
+            success: function(data) {
+                console.log('Artist Top50 Success');
 
-    tune.find({}, function (err, results) {
-        res.json(results);
+                //may run into error if there are less than 50 songs
+                for (var i = 0; i < 50; i++) {
+                    top50.push(data.toptracks.track[i].name);
+
+                    console.log(top50[i]);
+                }
+
+                //var artistInfo = { method: 'POST',
+                //    url: 'http://localhost:3000/users/db',
+                //    form: { artist: artistName,
+                //        twitter: "twitter.com/NA",
+                //        numPlays: artistPlays,
+                //        songs: top50
+                //    } };
+                //
+                //request(artistInfo, function (error, response, body) {
+                //    if (error) throw new Error(error);
+                //
+                //    console.log(body);
+                //});
+
+            },
+            error: function(error) {
+                console.log("Error: " + error.message);
+            }
+        }
     });
 
 });
+
+
+router.get('/db/features/:ids', function(req, res, next) {
+
+    var client_id = '75a1c00129ce4975a7c787d2658ec88c'; // Your client id
+    var client_secret = fs.readFileSync('./../../spotify_key.txt', 'utf8'); // Your client secret
+    var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
+
+    // requests authorization
+    var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        headers: {
+            'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        },
+        form: {
+            grant_type: 'client_credentials'
+        },
+        json: true
+    };
+
+    request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+
+            // use the access token to access the Spotify Web API
+            var token = body.access_token;
+            var options = {
+                url: 'https://api.spotify.com/v1/audio-features/?ids=' + req.params.ids,
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                json: true
+            };
+            request.get(options, function(error, response, body) {
+                console.log(body);
+            });
+        }
+    });
+});
+
 
 router.get('/db/:artist', function(req, res, next) {
 
@@ -86,82 +154,61 @@ router.get('/db/:artist', function(req, res, next) {
                 }
             });
 
-            var top50 = [];
-            var songsRequest = lastfm.request("artist.getTopTracks", {
-                artist: req.params.artist,
-                handlers: {
-                    success: function(data) {
-                        console.log('Artist Top50 Success');
+            //var top50 = [];
+            //var songsRequest = lastfm.request("artist.getTopTracks", {
+            //    artist: req.params.artist,
+            //    handlers: {
+            //        success: function(data) {
+            //            console.log('Artist Top50 Success');
+            //
+            //            //may run into error if there are less than 50 songs
+            //            for (var i = 0; i < 50; i++) {
+            //                top50.push(data.toptracks.track[i].name);
+            //            }
+            //
+            //            var artistInfo = { method: 'POST',
+            //                url: 'http://localhost:3000/users/db',
+            //                form: { artist: artistName,
+            //                        twitter: "twitter.com/NA",
+            //                        numPlays: artistPlays,
+            //                        songs: top50
+            //                } };
+            //
+            //            //request(artistInfo, function (error, response, body) {
+            //            //    if (error) throw new Error(error);
+            //            //
+            //            //    console.log(body);
+            //            //});
+            //
+            //
+            //
+            //        },
+            //        error: function(error) {
+            //            console.log("Error: " + error.message);
+            //        }
+            //    }
+            //});
 
-                        //may run into error if there are less than 50 songs
-                        for (var i = 0; i < 50; i++) {
-                            top50.push(data.toptracks.track[i].name);
-                        }
-
-                        var artistInfo = { method: 'POST',
-                            url: 'http://localhost:3000/users/db',
-                            form: { artist: artistName,
-                                    twitter: "twitter.com/NA",
-                                    numPlays: artistPlays,
-                                    songs: top50
-                            } };
-
-                        //request(artistInfo, function (error, response, body) {
-                        //    if (error) throw new Error(error);
-                        //
-                        //    console.log(body);
-                        //});
-
-
-
-                    },
-                    error: function(error) {
-                        console.log("Error: " + error.message);
-                    }
-                }
-            });
-
-
-            var clientId = '75a1c00129ce4975a7c787d2658ec88c',
-                clientSecret = fs.readFileSync('./../../spotify_key.txt', 'utf8');
-
-            // Create the api object with the credentials
-            var spotifyApi = new SpotifyWebApi({
-                clientId : clientId,
-                clientSecret : clientSecret
-            });
-
-            // Retrieve an access token.
-            spotifyApi.clientCredentialsGrant()
-                .then(function(data) {
-                    console.log('The access token expires in ' + data.body['expires_in']);
-                    console.log('The access token is ' + data.body['access_token']);
-
-                    // Save the access token so that it's used in future calls
-                    spotifyApi.setAccessToken(data.body['access_token']);
-                }, function(err) {
-                    console.log('Something went wrong when retrieving an access token', err);
-                });
+            //
+            //var topTracks = { method: 'GET',
+            //    url: 'http://localhost:3000/users/db/topTracks/' + artistName,
+            //    form: { artist: artistName
+            //    } };
+            //
+            //request(topTracks, function (error, response, body) {
+            //    if (error) throw new Error(error);
+            //        console.log(body);
+            //});
 
 
-            //problem is requests are getting ahead of other reuqests
+
+
+
+            //problem is requests are getting ahead of other requests
             //need to split things up and wait for callbacks to return instead
-            for (var i = 0; i < 50; i++) {
-                var songName = top50[i];
-                //var str = "hello there";
-                //str = str.split(' ').join('+');
+            //var str = "hello there";
+            //str = str.split(' ').join('+');
 
-                //console.log(songName);
-                //console.log(artistPlays);
-
-                // Get songs Spotify ID
-                //spotifyApi.searchTracks(songName + '+' + artistName)
-                //    .then(function(data) {
-                //        console.log(data.body.tracks.items[0].id);
-                //    }, function(err) {
-                //        console.error(err);
-                //    });
-            }
 
 
         }
