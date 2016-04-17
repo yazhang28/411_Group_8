@@ -93,7 +93,6 @@ app.get('/callback', function(req, res) {
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
 
-                console.log(access_token);
                 ////////////////////////////
                 var savedTracks = {
                     url: 'https://api.spotify.com/v1/me/tracks?offset=0&limit=50',   // https://developer.spotify.com/web-api/get-users-saved-tracks/

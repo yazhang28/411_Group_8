@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
+var rp = require('request-promise');
 var mongoose = require('mongoose');
 var fs = require('fs');
 mongoose.connect('mongodb://localhost/cs411a2');
@@ -10,9 +11,9 @@ mongoose.connect('mongodb://localhost/cs411a2');
 var Schema = mongoose.Schema;
 var track = new Schema({
     artist: String,
-    twitter: String,
     numPlays: String,
-    songs: []
+    songs: [],
+    analytics: []
 }, {
     strict: 'throw' //throw error when invalid track attempted
 });
@@ -24,6 +25,22 @@ var lastfm = new LastFmNode({
     api_key: '5a63919effc53c56e941641ca870cdc6',
     secret: fs.readFileSync('./../../fm_key.txt', 'utf8') // Client secret in local text file for security
 });
+
+var client_id = '75a1c00129ce4975a7c787d2658ec88c'; // Your client id
+var client_secret = fs.readFileSync('./../../spotify_key.txt', 'utf8'); // Your client secret
+var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
+
+// requests authorization
+var authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    },
+    form: {
+        grant_type: 'client_credentials'
+    },
+    json: true
+};
 
 /* GET users listing. */
 
@@ -50,7 +67,7 @@ router.get('/db', function(req, res, next) {
 });
 
 
-router.post('/db/topTracks/:artist', function(req, res, next) {
+router.get('/db/topTracks/:artist', function(req, res, next) {
     var top50 = [];
     var songsRequest = lastfm.request("artist.getTopTracks", {
         artist: req.params.artist,
@@ -58,26 +75,13 @@ router.post('/db/topTracks/:artist', function(req, res, next) {
             success: function(data) {
                 console.log('Artist Top50 Success');
 
+                var top50 = [];
                 //may run into error if there are less than 50 songs
-                for (var i = 0; i < 50; i++) {
+                for (var i = 0; i < 5; i++) {
                     top50.push(data.toptracks.track[i].name);
-
-                    console.log(top50[i]);
                 }
 
-                //var artistInfo = { method: 'POST',
-                //    url: 'http://localhost:3000/users/db',
-                //    form: { artist: artistName,
-                //        twitter: "twitter.com/NA",
-                //        numPlays: artistPlays,
-                //        songs: top50
-                //    } };
-                //
-                //request(artistInfo, function (error, response, body) {
-                //    if (error) throw new Error(error);
-                //
-                //    console.log(body);
-                //});
+                res.json(top50);
 
             },
             error: function(error) {
@@ -90,22 +94,6 @@ router.post('/db/topTracks/:artist', function(req, res, next) {
 
 
 router.get('/db/features/:ids', function(req, res, next) {
-
-    var client_id = '75a1c00129ce4975a7c787d2658ec88c'; // Your client id
-    var client_secret = fs.readFileSync('./../../spotify_key.txt', 'utf8'); // Your client secret
-    var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
-
-    // requests authorization
-    var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
-        headers: {
-            'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-        },
-        form: {
-            grant_type: 'client_credentials'
-        },
-        json: true
-    };
 
     request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
@@ -120,8 +108,63 @@ router.get('/db/features/:ids', function(req, res, next) {
                 json: true
             };
             request.get(options, function(error, response, body) {
-                console.log(body);
+                res.json(body);
             });
+        }
+    });
+});
+
+
+router.get('/db/lookupTrack/:songName', function(req, res, next) {
+
+    request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+
+            trackName = req.params.songName;
+            trackName = trackName.split(' ').join('+');
+            console.log('Looking up: ' + trackName);
+
+
+            // use the access token to access the Spotify Web API
+            var token = body.access_token;
+            var options = {
+                url: 'https://api.spotify.com/v1/search?q=' + trackName + '&type=track',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                json: true
+            };
+            request.get(options, function(error, response, body) {
+                res.json(body);
+            });
+        }
+    });
+});
+
+
+
+router.get('/db/artistInfo/:artist', function(req, res, next) {
+
+    //need to parse artist name so search works
+
+    var artistName = '';
+    var artistPlays = 0;
+
+    var infoRequest = lastfm.request("artist.getInfo", {
+        artist: req.params.artist,
+        handlers: {
+            success: function(data) {
+                artistName = data.artist.name;
+                artistPlays = data.artist.stats.listeners;
+
+                console.log('Artist Info Success');
+
+                res.json(data);
+
+            },
+            error: function(error) {
+                console.log("Error: " + error.message);
+            }
         }
     });
 });
@@ -134,81 +177,118 @@ router.get('/db/:artist', function(req, res, next) {
         //if not in DB already, go get it
         if(Object.keys(results).length === 0) {
 
-            console.log(req.params.artist + " Not Found In DB");
+            artistName = req.params.artist;
+            console.log(artistName + " Not Found In DB");
 
 
-            var artistName = '';
-            var artistPlays = 0;
-            var infoRequest = lastfm.request("artist.getInfo", {
-                artist: req.params.artist,
-                handlers: {
-                    success: function(data) {
-                        artistName = data.artist.name;
-                        artistPlays = data.artist.stats.listeners;
-                        console.log('Artist Info Success');
+            /*
+             *
+             * info = getArtistInfo()
+             *
+             * tracks = getTopTracks()
+             *
+             * ids = getSpotifyID()
+             *
+             * features = getAudioFeatures()
+             *
+             * POST: info, tracks, ids, features
+             *
+             * GET: artist, return info to front end
+             *
+             *
+             * */
 
-                    },
-                    error: function(error) {
-                        console.log("Error: " + error.message);
-                    }
+
+            /* Dependencies */
+            var Promise = require('bluebird');
+            var reqP = require('request-promise');
+
+
+            var artistInfo = {
+                method: 'GET',
+                url: 'http://localhost:3000/users/db/artistInfo/' + artistName
+            };
+
+            var topTracks = { method: 'GET',
+                url: 'http://localhost:3000/users/db/topTracks/' + artistName
+            };
+
+
+            Promise.all([reqP(artistInfo), reqP(topTracks)]).then(function(results) {
+
+                //console.log(results[0]);
+                //console.log(results[1]);
+
+                var info = JSON.parse(results[0]);
+                var tracks = JSON.parse(results[1]);
+                var songIDs = '';
+
+
+                for(i = 0; i < 5; i++) {
+
+                    //get songs into proper search format
+                    var song = tracks[i].split(' ').join('+');
+
+                    var id = { method: 'GET',
+                        url: 'http://localhost:3000/users/db/lookupTrack/' + song
+                    };
+
+                    //get all ID's
+                    Promise.all([reqP(id)]).then(function(results) {
+
+                        var spotifyTrack = JSON.parse(results[0]);
+
+                        songIDs += spotifyTrack.tracks.items[0].album.id;
+
+                    }, function(err) {
+                        console.log(err);
+                    });
                 }
+
+                console.log('IDs: ' + songIDs);
+
+
+
+                var audioFeatures = { method: 'GET',
+                    url: 'http://localhost:3000/users/db/features/4JpKVNYnVcJ8tuMKjAj50A,2NRANZE9UCmPAS5XVbXL40'
+                };
+
+                //convert ID's to audio features via spotify
+                Promise.all([reqP(audioFeatures)]).then(function(results) {
+
+                    var features = results[0];
+                    console.log(features);
+
+
+                }, function(err) {
+                    console.log(err);
+                });
+
+
+                //store all info in DB then done
+
+
+
+            }, function(err) {
+                console.log(err);
             });
 
-            //var top50 = [];
-            //var songsRequest = lastfm.request("artist.getTopTracks", {
-            //    artist: req.params.artist,
-            //    handlers: {
-            //        success: function(data) {
-            //            console.log('Artist Top50 Success');
-            //
-            //            //may run into error if there are less than 50 songs
-            //            for (var i = 0; i < 50; i++) {
-            //                top50.push(data.toptracks.track[i].name);
-            //            }
-            //
-            //            var artistInfo = { method: 'POST',
-            //                url: 'http://localhost:3000/users/db',
-            //                form: { artist: artistName,
-            //                        twitter: "twitter.com/NA",
-            //                        numPlays: artistPlays,
-            //                        songs: top50
-            //                } };
-            //
-            //            //request(artistInfo, function (error, response, body) {
-            //            //    if (error) throw new Error(error);
-            //            //
-            //            //    console.log(body);
-            //            //});
-            //
-            //
-            //
-            //        },
-            //        error: function(error) {
-            //            console.log("Error: " + error.message);
-            //        }
-            //    }
-            //});
 
-            //
-            //var topTracks = { method: 'GET',
-            //    url: 'http://localhost:3000/users/db/topTracks/' + artistName,
-            //    form: { artist: artistName
-            //    } };
-            //
-            //request(topTracks, function (error, response, body) {
+
+            /*
+             *
+             * Audio Information
+             *
+             */
+            var audioFeatures = { method: 'GET',
+                url: 'http://localhost:3000/users/db/features/4JpKVNYnVcJ8tuMKjAj50A,2NRANZE9UCmPAS5XVbXL40'
+            };
+
+            //request(audioFeatures, function (error, response, body) {
             //    if (error) throw new Error(error);
-            //        console.log(body);
+            //
+            //    console.log(body);
             //});
-
-
-
-
-
-            //problem is requests are getting ahead of other requests
-            //need to split things up and wait for callbacks to return instead
-            //var str = "hello there";
-            //str = str.split(' ').join('+');
-
 
 
         }
