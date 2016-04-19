@@ -107,6 +107,7 @@ router.get('/db/features/:ids', function(req, res, next) {
                 },
                 json: true
             };
+            console.log(options);
             request.get(options, function(error, response, body) {
                 res.json(body);
             });
@@ -135,6 +136,7 @@ router.get('/db/lookupTrack/:songName', function(req, res, next) {
                 json: true
             };
             request.get(options, function(error, response, body) {
+                console.log('Audio Features Success');
                 res.json(body);
             });
         }
@@ -199,11 +201,6 @@ router.get('/db/:artist', function(req, res, next) {
              * */
 
 
-            /* Dependencies */
-            var Promise = require('bluebird');
-            var reqP = require('request-promise');
-
-
             var artistInfo = {
                 method: 'GET',
                 url: 'http://localhost:3000/users/db/artistInfo/' + artistName
@@ -214,64 +211,74 @@ router.get('/db/:artist', function(req, res, next) {
             };
 
 
-            Promise.all([reqP(artistInfo), reqP(topTracks)]).then(function(results) {
+            /* Dependencies */
+            var Promise = require('bluebird');
+            var reqP = Promise.promisifyAll(require('request-promise'));
 
-                //console.log(results[0]);
-                //console.log(results[1]);
+            reqP(artistInfo)
+                .then(function(infoResults) {
 
-                var info = JSON.parse(results[0]);
-                var tracks = JSON.parse(results[1]);
-                var songIDs = '';
+                    return JSON.parse(infoResults);
 
+                })
+                .then(function(info) {
 
-                for(i = 0; i < 5; i++) {
+                    return reqP(topTracks)
+                        .then(function(results) {
+
+                            //console.log(body);
+
+                            return [info, results];
+                        });
+                })
+                .then(function(topTracksResults) {
+
+                    trackList = JSON.parse(topTracksResults[1]);
 
                     //get songs into proper search format
-                    var song = tracks[i].split(' ').join('+');
+                    var song = trackList[0].split(' ').join('+');
 
-                    var id = { method: 'GET',
+                    var id = {
+                        method: 'GET',
                         url: 'http://localhost:3000/users/db/lookupTrack/' + song
                     };
 
-                    //get all ID's
-                    Promise.all([reqP(id)]).then(function(results) {
+                    return reqP(id)
+                        .then(function(results) {
 
-                        var spotifyTrack = JSON.parse(results[0]);
+                            var spotifyTrack = JSON.parse(results);
 
-                        songIDs += spotifyTrack.tracks.items[0].album.id;
+                            return  [topTracksResults[0], topTracksResults[1], spotifyTrack.tracks.items[0].album.id];
 
-                    }, function(err) {
-                        console.log(err);
-                    });
-                }
+                        });
 
-                console.log('IDs: ' + songIDs);
+                })
+                .then(function(data) {
+
+                    console.log(data);
+
+                    var audioFeatures = { method: 'GET',
+                        url: 'http://localhost:3000/users/db/features/' + data[2] + ',2widuo17g5CEC66IbzveRu'
+                    };
+
+                    return reqP(audioFeatures)
+                        .then(function(results) {
+
+                            //return data.push(JSON.parse(results));
+                            console.log(results);
+
+                        })
+
+                })
+                .then(function(data) {
+
+                    //console.log(data);
 
 
-
-                var audioFeatures = { method: 'GET',
-                    url: 'http://localhost:3000/users/db/features/4JpKVNYnVcJ8tuMKjAj50A,2NRANZE9UCmPAS5XVbXL40'
-                };
-
-                //convert ID's to audio features via spotify
-                Promise.all([reqP(audioFeatures)]).then(function(results) {
-
-                    var features = results[0];
-                    console.log(features);
-
-
-                }, function(err) {
-                    console.log(err);
+                })
+                .catch(function(err) {
+                    throw err;
                 });
-
-
-                //store all info in DB then done
-
-
-
-            }, function(err) {
-                console.log(err);
-            });
 
 
 
