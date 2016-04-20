@@ -11,9 +11,14 @@ mongoose.connect('mongodb://localhost/cs411a2');
 var Schema = mongoose.Schema;
 var track = new Schema({
     artist: String,
-    numPlays: String,
+    bio: String,
     songs: [],
-    analytics: []
+    danceability: String,
+    energy: String,
+    speechiness: String,
+    tempo: String,
+    popularity: String
+
 }, {
     strict: 'throw' //throw error when invalid track attempted
 });
@@ -51,7 +56,7 @@ router.get('/', function(req, res, next) {
 router.post('/db', function(req, res, next) {
     var tune1 = new tune(req.body);
     tune1.save(function (err) {
-        if (err) { console.log('error!');}
+        if (err) { console.log(err);}
         else {
             res.json({message: 'Successful posting!'});
         }
@@ -107,9 +112,14 @@ router.get('/db/features/:ids', function(req, res, next) {
                 },
                 json: true
             };
-            console.log(options);
+
             request.get(options, function(error, response, body) {
-                res.json(body);
+                if(error) {
+                    console.log('Error geting audio features');
+                    console.log(error);
+                } else {
+                    res.json(body);
+                }
             });
         }
     });
@@ -135,6 +145,7 @@ router.get('/db/lookupTrack/:songName', function(req, res, next) {
                 },
                 json: true
             };
+
             request.get(options, function(error, response, body) {
                 console.log('Audio Features Success');
                 res.json(body);
@@ -146,11 +157,6 @@ router.get('/db/lookupTrack/:songName', function(req, res, next) {
 
 
 router.get('/db/artistInfo/:artist', function(req, res, next) {
-
-    //need to parse artist name so search works
-
-    var artistName = '';
-    var artistPlays = 0;
 
     var infoRequest = lastfm.request("artist.getInfo", {
         artist: req.params.artist,
@@ -179,26 +185,8 @@ router.get('/db/:artist', function(req, res, next) {
         //if not in DB already, go get it
         if(Object.keys(results).length === 0) {
 
-            artistName = req.params.artist;
+            var artistName = req.params.artist;
             console.log(artistName + " Not Found In DB");
-
-
-            /*
-             *
-             * info = getArtistInfo()
-             *
-             * tracks = getTopTracks()
-             *
-             * ids = getSpotifyID()
-             *
-             * features = getAudioFeatures()
-             *
-             * POST: info, tracks, ids, features
-             *
-             * GET: artist, return info to front end
-             *
-             *
-             * */
 
 
             var artistInfo = {
@@ -217,23 +205,25 @@ router.get('/db/:artist', function(req, res, next) {
 
             reqP(artistInfo)
                 .then(function(infoResults) {
+                    var info = JSON.parse(infoResults);
 
-                    return JSON.parse(infoResults);
+                    return [info];
 
                 })
-                .then(function(info) {
+                .then(function(data) {
 
                     return reqP(topTracks)
                         .then(function(results) {
 
-                            //console.log(body);
+                            var tracks = JSON.parse(results);
+                            data.push(tracks);
 
-                            return [info, results];
+                            return data;
                         });
                 })
-                .then(function(topTracksResults) {
+                .then(function(data) {
 
-                    trackList = JSON.parse(topTracksResults[1]);
+                    var trackList = data[1];
 
                     //get songs into proper search format
                     var song = trackList[0].split(' ').join('+');
@@ -248,56 +238,135 @@ router.get('/db/:artist', function(req, res, next) {
 
                             var spotifyTrack = JSON.parse(results);
 
-                            return  [topTracksResults[0], topTracksResults[1], spotifyTrack.tracks.items[0].album.id];
+                            data.push(spotifyTrack.tracks.items[0].id);
+                            return data;
 
                         });
 
                 })
                 .then(function(data) {
 
-                    console.log(data);
+                    var trackList = data[1];
+
+                    //get songs into proper search format
+                    var song = trackList[1].split(' ').join('+');
+
+                    var id = {
+                        method: 'GET',
+                        url: 'http://localhost:3000/users/db/lookupTrack/' + song
+                    };
+
+                    return reqP(id)
+                        .then(function(results) {
+
+                            var spotifyTrack = JSON.parse(results);
+
+                            data.push(spotifyTrack.tracks.items[0].id);
+                            return data;
+
+                        });
+
+                })
+                .then(function(data) {
+
+                    var trackList = data[1];
+
+                    //get songs into proper search format
+                    var song = trackList[2].split(' ').join('+');
+
+                    var id = {
+                        method: 'GET',
+                        url: 'http://localhost:3000/users/db/lookupTrack/' + song
+                    };
+
+                    return reqP(id)
+                        .then(function(results) {
+
+                            var spotifyTrack = JSON.parse(results);
+
+                            data.push(spotifyTrack.tracks.items[0].id);
+                            return data;
+
+                        });
+
+                })
+                .then(function(data) {
+
 
                     var audioFeatures = { method: 'GET',
-                        url: 'http://localhost:3000/users/db/features/' + data[2] + ',2widuo17g5CEC66IbzveRu'
+                        url: 'http://localhost:3000/users/db/features/' + data[2] + ',' + data[3] + ',' + data[4]
                     };
 
                     return reqP(audioFeatures)
                         .then(function(results) {
 
-                            //return data.push(JSON.parse(results));
-                            console.log(results);
+                            var features = JSON.parse(results);
+
+                            var d1 = parseFloat(features.audio_features[0].danceability);
+                            var d2 = parseFloat(features.audio_features[1].danceability);
+                            var d3 = parseFloat(features.audio_features[2].danceability);
+
+                            var dAvg = (d1 + d2 + d3) /3.0;
+
+                            var e1 = parseFloat(features.audio_features[0].energy);
+                            var e2 = parseFloat(features.audio_features[1].energy);
+                            var e3 = parseFloat(features.audio_features[2].energy);
+
+                            var eAvg = (e1 + e2 + e3) /3.0;
+
+                            var s1 = parseFloat(features.audio_features[0].speechiness);
+                            var s2 = parseFloat(features.audio_features[1].speechiness);
+                            var s3 = parseFloat(features.audio_features[2].speechiness);
+
+                            var sAvg = (s1 + s2 + s3) /3.0;
+
+                            var t1 = parseFloat(features.audio_features[0].tempo);
+                            var t2 = parseFloat(features.audio_features[1].tempo);
+                            var t3 = parseFloat(features.audio_features[2].tempo);
+
+                            var tAvg = (t1 + t2 + t3) /3.0;
+
+                            data.push([dAvg, eAvg, sAvg, tAvg]);
+                            return data;
 
                         })
 
                 })
                 .then(function(data) {
 
-                    //console.log(data);
+                    var bio = data[0].artist.bio.summary;
+                    var songs = data[1];
+                    var danceability = data[5][0];
+                    var energy = data[5][1];
+                    var speechiness = data[5][2];
+                    var tempo = data[5][3];
+                    var popularity = data[0].artist.stats.listeners;
+
+                    var options = { method: 'POST',
+                        url: 'http://localhost:3000/users/db',
+                        form: {
+                            artist: artistName,
+                            bio: bio,
+                            songs: songs,
+                            danceability: danceability,
+                            energy: energy,
+                            speechiness: speechiness,
+                            tempo: tempo,
+                            popularity: popularity
+                        }
+                    };
+
+                    request(options, function (error, response, body) {
+                        if (error) throw new Error(error);
+
+                        console.log(body);
+                    });
 
 
                 })
                 .catch(function(err) {
                     throw err;
                 });
-
-
-
-            /*
-             *
-             * Audio Information
-             *
-             */
-            var audioFeatures = { method: 'GET',
-                url: 'http://localhost:3000/users/db/features/4JpKVNYnVcJ8tuMKjAj50A,2NRANZE9UCmPAS5XVbXL40'
-            };
-
-            //request(audioFeatures, function (error, response, body) {
-            //    if (error) throw new Error(error);
-            //
-            //    console.log(body);
-            //});
-
-
         }
         else {
             res.json(results);
