@@ -362,6 +362,13 @@ router.get('/db/:artist', function(req, res, next) {
                         console.log(body);
                     });
 
+                    return artistName;
+                })
+                .then(function(data) {
+
+                    tune.find({artist: data}, function (err, results) {
+                        res.json(results);
+                    });
 
                 })
                 .catch(function(err) {
