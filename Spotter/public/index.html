@@ -16,11 +16,16 @@
 
 <body ng-app="Spotter">
 <div ng-controller="spotterCtrl">
-    <h1>Spotter</h1>
-    <label>Artist Name:</label>
-    <input type="text" name="name" id="name" ng-model="name" value="name">
-    <button ng-click="getArtist(name)">Search</button>
-    <button ng-click="getAllArtists()">Show All Artists</button>
+    <h1 class="h1">Spotter</h1>
+    <!--Some style added -->
+    <!--<label>Artist Name:</label>-->
+
+    <input class="input" type="text" placeholder='Artist name' name="name" id="name" ng-model="name" value="name">
+    <!--<button ng-click="getArtist(name)">Search</button>
+    <button ng-click="getAllArtists()">Show All Artists</button>-->
+    <br/>
+    <button class="b1 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>
+    <button class="b2 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
     <!--<button ng-click="upper()">Upper test</button>-->
     <br/>
     <ul>
@@ -28,6 +33,29 @@
     </ul>
 </div>
 
+<!--added style-->
+<style>
+    .h1 {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        text-align: center;
+    }
+    .b1 {
+        margin-left: 560px;
+        margin-bottom: 50px;
+    }
+    .b2 {
+        margin-bottom: 50px;
+    }
+    .w3-btn {
+        width: 120px;
+    }
+    .input {
+        width: 100px;
+        margin-left: 630px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <uib-tabset active="activeJustified" justified="true">
     <uib-tab index="0" heading="Danceability">Justified content</uib-tab>
@@ -143,6 +171,10 @@
 <head>
     <title>Spotter</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!--added for styling-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+
     <style type="text/css">
         #login, #loggedin {
             display: none;
