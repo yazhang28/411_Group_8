@@ -1,170 +1,162 @@
 <!doctype html>
 
-
-
 <html>
 
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
-<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.2.js"></script>
-<script src="javascripts/controllers.js"></script>
 
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+<!--<head>-->
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>-->
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>-->
+    <!--<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.2.js"></script>-->
+
+    <!--<script src="javascripts/controllers.js"></script>-->
+
+    <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">-->
+
+<!--</head>-->
 
 
 
+<!--<body ng-app="Spotter">-->
+<!--<div ng-controller="spotterCtrl">-->
+    <!--<h1 class="h1">Spotter</h1>-->
 
-<body ng-app="Spotter">
-<div ng-controller="spotterCtrl">
-    <h1 class="h1">Spotter</h1>
-    <!--Some style added -->
-    <!--<label>Artist Name:</label>-->
+    <!--<input class="input" type="text" placeholder='Artist name' name="name" id="name" ng-model="name" value="name">-->
+    <!--<br/>-->
+    <!--<button class="b1 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>-->
+    <!--<button class="b2 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>-->
+    <!--&lt;!&ndash;<button ng-click="upper()">Upper test</button>&ndash;&gt;-->
+    <!--<br/>-->
+    <!--<ul>-->
+        <!--<li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.energy}} {{name.speechiness}}</li>-->
+    <!--</ul>-->
 
-    <input class="input" type="text" placeholder='Artist name' name="name" id="name" ng-model="name" value="name">
-    <!--<button ng-click="getArtist(name)">Search</button>
-    <button ng-click="getAllArtists()">Show All Artists</button>-->
-    <br/>
-    <button class="b1 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>
-    <button class="b2 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
-    <!--<button ng-click="upper()">Upper test</button>-->
-    <br/>
-    <ul>
-        <li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.energy}} {{name.speechiness}} {{name.bio}}</li>
-    </ul>
+
+
+    <!--&lt;!&ndash;added style&ndash;&gt;-->
+    <!--<style>-->
+        <!--.h1 {-->
+            <!--padding-top: 20px;-->
+            <!--padding-bottom: 20px;-->
+            <!--text-align: center;-->
+        <!--}-->
+        <!--.b1 {-->
+            <!--margin-left: 555px;-->
+            <!--margin-bottom: 50px;-->
+        <!--}-->
+        <!--.b2 {-->
+            <!--margin-bottom: 50px;-->
+        <!--}-->
+        <!--.w3-btn {-->
+            <!--width: 120px;-->
+        <!--}-->
+        <!--.input {-->
+            <!--width: 100px;-->
+            <!--margin-left: 625px;-->
+            <!--margin-bottom: 10px;-->
+        <!--}-->
+    <!--</style>-->
+
+    <!--<uib-tabset active="activeJustified" justified="true">-->
+        <!--<uib-tab index="0" heading="Danceability">content</uib-tab>-->
+        <!--<uib-tab index="1" heading="Energy">content</uib-tab>-->
+        <!--<uib-tab index="2" heading="Vocals">Nada</uib-tab>-->
+        <!--<uib-tab index="3" heading="Tempo">Nada</uib-tab>-->
+        <!--<uib-tab index="4" heading="Popularity">Nada</uib-tab>-->
+        <!--<uib-tab index="5" heading="All">Nada</uib-tab>-->
+    <!--</uib-tabset>-->
+
+<!--</body>-->
+
+
+<head>
+    <meta charset="utf-8">
+    <title>Spotter</title>
+    <meta name="description" content="d3 and Angular">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+
+    <!--tab stuff-->
+
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>-->
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>-->
+    <!--<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.2.js"></script>-->
+    <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">-->
+
+
+</head>
+
+<body ng-app="myApp">
+<div class="row">
+    <div class="col-md-6 col-md-offset-3" ng-controller="DemoCtrl2">
+
+        <h1 class="h1">Spotter</h1>
+
+        <input class="input" type="text" placeholder='Artist name' name="name" id="name" ng-model="name" value="name">
+        <button class="b1 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>
+        <button class="b2 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
+
+
+
+        <!--<uib-tabset active="activeJustified" justified="true">-->
+            <!--<uib-tab index="0" heading="Danceability">content</uib-tab>-->
+            <!--<uib-tab index="1" heading="Energy">content</uib-tab>-->
+            <!--<uib-tab index="2" heading="Vocals">Nada</uib-tab>-->
+            <!--<uib-tab index="3" heading="Tempo">Nada</uib-tab>-->
+            <!--<uib-tab index="4" heading="Popularity">Nada</uib-tab>-->
+            <!--<uib-tab index="5" heading="All">Nada</uib-tab>-->
+        <!--</uib-tabset>-->
+
+
+
+        <d3-bars data="d3Data" label="title"></d3-bars>
+        <br>
+        <br>
+        <span>Artist 1</span>
+        <input type="text" ng-model="d3Data[0].score"></input>
+        <br>
+        <span>Artist 2</span>
+        <input type="text" ng-model="d3Data[1].score"></input>
+        <br>
+        <span>Artist 3</span>
+        <input type="text" ng-model="d3Data[2].score"></input>
+
+
+        <style>
+            .h1 {
+                padding-top: 20px;
+                padding-bottom: 20px;
+                text-align: center;
+            }
+            .b1 {
+                margin-left: 100px;
+                margin-bottom: 50px;
+            }
+            .b2 {
+                margin-left: 100px;
+                margin-bottom: 50px;
+            }
+            .w3-btn {
+                width: 120px;
+            }
+            .input {
+                width: 100px;
+                margin-left: 100px;
+                margin-bottom: 10px;
+            }
+        </style>
+
+
+    </div>
 </div>
 
-<!--added style-->
-<style>
-    .h1 {
-        padding-top: 50px;
-        padding-bottom: 50px;
-        text-align: center;
-    }
-    .b1 {
-        margin-left: 555px;
-        margin-bottom: 50px;
-    }
-    .b2 {
-        margin-bottom: 50px;
-    }
-    .w3-btn {
-        width: 120px;
-    }
-    .input {
-        width: 100px;
-        margin-left: 625px;
-        margin-bottom: 10px;
-    }
-</style>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/d3.js"></script>
+<script src="javascripts/demoCtrl.js"></script>
+<script src="javascripts/demoCtrl2.js"></script>
+<script src="javascripts/d3Basic.js"></script>
 
-<uib-tabset active="activeJustified" justified="true">
-    <uib-tab index="0" heading="Danceability">Justified content</uib-tab>
-    <uib-tab index="1" heading="Energy">Short Labeled Justified content</uib-tab>
-    <uib-tab index="2" heading="Vocals">Nada</uib-tab>
-    <uib-tab index="3" heading="Tempo">Nada</uib-tab>
-    <uib-tab index="4" heading="Popularity">Nada</uib-tab>
-    <uib-tab index="5" heading="All">Nada</uib-tab>
-</uib-tabset>
 </body>
-
-
-<!--xxxxxxxxxxxxxxxxxx-->
-<!--Beginning of graph-->
-<!--xxxxxxxxxxxxxxxxxx-->
-
-<meta charset="utf-8">
-<style>
-
-    .bar {
-        fill: #3182bd;
-    }
-
-    .bar:hover {
-        fill: #6baed6;
-    }
-
-    .axis {
-        font: 10px sans-serif;
-    }
-
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-    }
-
-    .x.axis path {
-        display: none;
-    }
-
-</style>
-<body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
-
-    var margin = {top: 20, right: 20, bottom: 30, left: 100},
-            width = 960 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
-
-    var x = d3.scale.ordinal()
-            .rangeRoundBands([0, width], .1);
-
-    var y = d3.scale.linear()
-            .range([height, 0]);
-
-    var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left")
-            .ticks(10, "%");
-
-    var svg = d3.select("body").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    d3.tsv("data.tsv", type, function(error, data) {
-        if (error) throw error;
-
-        x.domain(data.map(function(d) { return d.letter; }));
-        y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-        svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-        svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .style("text-anchor", "end")
-                .text("");
-
-        svg.selectAll(".bar")
-                .data(data)
-                .enter().append("rect")
-                .attr("class", "bar")
-                .attr("x", function(d) { return x(d.letter); })
-                .attr("width", x.rangeBand())
-                .attr("y", function(d) { return y(d.frequency); })
-                .attr("height", function(d) { return height - y(d.frequency); });
-    });
-
-    function type(d) {
-        d.frequency = +d.frequency;
-        return d;
-    }
-
-</script>
 
 
 

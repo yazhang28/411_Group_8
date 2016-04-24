@@ -72,6 +72,16 @@ router.get('/db', function(req, res, next) {
 });
 
 
+router.get('/db/energy/:artist', function(req, res, next) {
+
+    tune.find({}, function (err, results) {
+        console.log('got to users.js');
+        res.json(results);
+    });
+
+});
+
+
 router.get('/db/topTracks/:artist', function(req, res, next) {
     var top50 = [];
     var songsRequest = lastfm.request("artist.getTopTracks", {
