@@ -11,18 +11,38 @@
                 {title: "Artist 3", score: 87}
             ];
 
-            $scope.test = 0;
 
-            $scope.d3OnClick = function(item){
-                alert(item.name);
+            //$scope.d3OnClick = function(item){
+            //    alert(item.name);
+            //};
+
+
+            $scope.getArtistData = function(i) {
+
+                var name = $scope.d3Data[i].score;
+
+                $http.get('http://localhost:3000/users/db/' + name)
+                    .then(function(response){
+
+                        console.log(response);
+
+                        $scope.d3Data[i].score = response.data[0].danceability * 100;
+                        $scope.d3Data[i].title = name;
+                    });
             };
 
-            $scope.getArtistInfo = function() {
-                //$http.get('http://localhost:3000/users/db' + name)
-                //    .then(function(response){
-                //        //$scope.artists = response.data;
-                //    })
-                return 5;
+            $scope.getArtist = function(name) {
+                $http.get('http://localhost:3000/users/db/' + name)
+                    .then(function(response){
+                        $scope.artists = response.data;
+                    })
+            };
+
+            $scope.getAllArtists = function() {
+                $http.get('http://localhost:3000/users/db')
+                    .then(function(response){
+                        $scope.artists = response.data;
+                    })
             };
         }])
 

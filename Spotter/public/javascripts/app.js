@@ -9,7 +9,7 @@
 
     // setup dependency injection
     angular.module('d3', []);
-    angular.module('myApp.controllers', []);
+    angular.module('myApp.controllers', ['ngAnimate', 'ui.bootstrap']);
     angular.module('myApp.directives', ['d3']);
 
 

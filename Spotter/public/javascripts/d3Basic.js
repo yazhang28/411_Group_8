@@ -58,7 +58,7 @@
                             .attr("height", 30) // height of each bar
                             .attr("width", 0) // initial width of 0 for transition
                             .attr("x", 10) // half of the 20 side margin specified above
-                            .attr("fill", "#585858")
+                            .attr("fill", "#2EBD59")
                             .attr("y", function(d, i){
                                 return i * 35;
                             }) // height + margin between bars
@@ -72,7 +72,7 @@
                             .data(data)
                             .enter()
                             .append("text")
-                            .attr("fill", "#fff")
+                            .attr("fill", "#585858")
                             .attr("y", function(d, i){return i * 35 + 22;})
                             .attr("x", 15)
                             .text(function(d){return d[scope.label];});

@@ -190,6 +190,7 @@ router.get('/db/artistInfo/:artist', function(req, res, next) {
 
 router.get('/db/:artist', function(req, res, next) {
 
+
     tune.find({artist: req.params.artist}, function (err, results) {
 
         //if not in DB already, go get it
