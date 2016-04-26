@@ -7,6 +7,7 @@
 
             $scope.title = "DemoCtrl2";
 
+            // default data when first load app
             $scope.d3Data = [
                 {title: "Artist 1", score:15},
                 {title: "Artist 2", score:30},
@@ -17,6 +18,7 @@
 
 
             $scope.onClick = function(item) {
+                console.log('got here');
                 $scope.$apply(function() {
                     if (!$scope.showDetailPanel)
                         $scope.showDetailPanel = true;
