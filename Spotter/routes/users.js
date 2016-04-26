@@ -72,6 +72,16 @@ router.get('/db', function(req, res, next) {
 });
 
 
+router.get('/db/energy/:artist', function(req, res, next) {
+
+    tune.find({}, function (err, results) {
+        console.log('got to users.js');
+        res.json(results);
+    });
+
+});
+
+
 router.get('/db/topTracks/:artist', function(req, res, next) {
     var top50 = [];
     var songsRequest = lastfm.request("artist.getTopTracks", {
@@ -179,6 +189,7 @@ router.get('/db/artistInfo/:artist', function(req, res, next) {
 
 
 router.get('/db/:artist', function(req, res, next) {
+
 
     tune.find({artist: req.params.artist}, function (err, results) {
 
@@ -356,11 +367,11 @@ router.get('/db/:artist', function(req, res, next) {
                         }
                     };
 
-                    request(options, function (error, response, body) {
-                        if (error) throw new Error(error);
-
-                        console.log(body);
-                    });
+                    //request(options, function (error, response, body) {
+                    //    if (error) throw new Error(error);
+                    //
+                    //    console.log(body);
+                    //});
 
 
                 })
