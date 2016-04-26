@@ -94,39 +94,6 @@ app.get('/callback', function(req, res) {
                     refresh_token = body.refresh_token;
 
                 ////////////////////////////
-                var savedTracks = {
-                    url: 'https://api.spotify.com/v1/me/tracks?offset=0&limit=50',   // https://developer.spotify.com/web-api/get-users-saved-tracks/
-                    headers: {'Authorization': 'Bearer ' + access_token},
-                    json: true
-                };
-
-                var count = 1;
-                while(count < 1) {
-                    request.get(savedTracks, function (error, response, body) {
-
-                        //loop through first 50 tracks saved tracks
-                        for (var i = 0; i < 6; i++) {
-                            var title = body.items[i].track.name;
-                            var artist = body.items[i].track.artists[0].name;
-
-                            console.log(title + ", " + artist);
-
-                            var options = { method: 'POST',
-                                url: 'http://localhost:3000/users/db',
-                                form: { title: title, artist: artist} };
-
-                            request(options, function (error, response, body) {
-                                if (error) throw new Error(error);
-
-                                console.log(body);
-                             });
-                        }
-                    });
-
-                    count++;
-                }
-
-
 
                 var topArtists = {
                     url: 'https://api.spotify.com/v1/me/top/artists?limit=3',
