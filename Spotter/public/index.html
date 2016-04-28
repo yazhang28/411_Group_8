@@ -2,9 +2,15 @@
 
 <html>
 
+<style>
+
+</style>
+
 <head>
     <meta charset="utf-8">
-    <title>Spotter</title>
+    <!--changed-->
+    <!--<title>Spotter</title>-->
+    <img src="spotter.png" width="350" style="position: relative; top:20vh; left:37vw;padding-bottom:120px;">
     <meta name="description" content="d3 and Angular">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
@@ -25,68 +31,108 @@
 
 
 <body ng-app="myApp">
-<div class="row">
-    <div class="col-md-6 col-md-offset-3" ng-controller="DemoCtrl2">
-
-        <h1 class="h1">Spotter</h1>
-
+<div class="row" style="font-family: 'MS Gothic'">
+    <div style="text-align: center" class="col-md-6 col-md-offset-3" ng-controller="DemoCtrl2">
+<!--changed-->
+        <!--<h1 class="h1">Spotter</h1>-->
         <input class="input" type="text" placeholder='Artist name' name="name" id="name" ng-model="name" value="name">
-        <button class="b1 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>
-        <button class="b2 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
-
+        <button class="b1 w3-btn w3-amber w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>
+        <button class="b2 w3-btn w3-amber w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
         <ul>
             <li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.bio}}</li>
         </ul>
 
+        <div style="background-color: rgba(183, 174, 173, 0.5); border-radius: 12px; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+        <uib-tabset style="color: white;" active="active" >
 
-        <uib-tabset active="active">
-            <uib-tab index="0" select="tabChanged(0)" heading="Danceability">Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.</uib-tab>
-            <uib-tab index="1" select="tabChanged(1)" heading="Energy">Represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.</uib-tab>
-            <uib-tab index="2" select="tabChanged(2)" heading="Vocals">Average presence of speech in an artist’s songs based on top tracks.</uib-tab>
-            <uib-tab index="3" select="tabChanged(3)" heading="Tempo">The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.</uib-tab>
-            <uib-tab index="4" select="tabChanged(4)" heading="Popularity">Number of listeners for an artist.</uib-tab>
-            <uib-tab index="5" select="tabChanged(5)" heading="All">A combination of danceability, energy, and vocals.</uib-tab>
+            <uib-tab  index="0" select="tabChanged(0)" heading="Danceability"><span class=" fade-in one">Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.</span></uib-tab>
+            <uib-tab  index="1" select="tabChanged(1)" heading="Energy"><span class=" fade-in one">Represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.</span></uib-tab>
+            <uib-tab  index="2" select="tabChanged(2)" heading="Vocals"><span class=" fade-in one">Average presence of speech in an artist’s songs based on top tracks.</span></uib-tab>
+            <uib-tab  index="3" select="tabChanged(3)" heading="Tempo"><span class=" fade-in one">The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.</span></uib-tab>
+            <uib-tab  index="4" select="tabChanged(4)" heading="Popularity"><span class=" fade-in one">Number of listeners for an artist.</span></uib-tab>
+            <uib-tab  index="5" select="tabChanged(5)" heading="All"><span class=" fade-in one">A combination of danceability, energy, and vocals.</span></uib-tab>
         </uib-tabset>
         <br>
 
-
+        <div class="fade-in three" style="text-align: center;">
         <d3-bars data="d3Data" label="title" on-click="d3OnClick(item)"></d3-bars>
+
         <br>
         <br>
-        <span contenteditable="true" ng-bind="d3Data[0].title"> </span>
-        <input type="text" ng-model="d3Data[0].score"></input>
-        <button class="b3 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtistData(0)">Update</button>
+        <span style="color: antiquewhite" contenteditable="true" ng-bind="d3Data[0].title"> </span>
+        <input style="width: 100px" type="text" ng-model="d3Data[0].score"></input>
+        <button class="b3 w3-btn w3-black w3-hover-amber w3-round w3-tiny" ng-click="getArtistData(0)">Update</button>
         <br>
-        <span contenteditable="true" ng-bind="d3Data[1].title"> </span>
-        <input type="text" ng-model="d3Data[1].score"></input>
-        <button class="b3 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtistData(1)">Update</button>
+        <span style="color: antiquewhite" contenteditable="true" ng-bind="d3Data[1].title"> </span>
+        <input style="width: 100px" type="text" ng-model="d3Data[1].score"></input>
+        <button class="b3 w3-btn w3-black w3-hover-amber w3-round w3-tiny" ng-click="getArtistData(1)">Update</button>
         <br>
-        <span contenteditable="true" ng-bind="d3Data[2].title"> </span>
-        <input type="text" ng-model="d3Data[2].score"></input>
-        <button class="b3 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtistData(2)">Update</button>
-        <br>
-        <!--<span contenteditable="true" ng-bind="d3Data[2].title"> </span>-->
-        <button class="b3 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getTop3()">Get My Top 3</button>
+        <span style="color: antiquewhite" contenteditable="true" ng-bind="d3Data[2].title"> </span>
+        <input style="width: 100px" type="text" ng-model="d3Data[2].score"></input>
+        <button style="margin-bottom: 3px" class="b3 w3-btn w3-black w3-hover-amber w3-round w3-tiny" ng-click="getArtistData(2)">Update</button>
         <br>
 
+        <!--<span contenteditable="true" ng-bind="d3Data[2].title"> </span>-->
+        <button style="margin-left: 185px; margin-bottom: 5px" class="b3 w3-btn w3-black w3-hover-amber w3-round w3-tiny" ng-click="getTop3()">Get My Top 3</button>
+        <br>
+        </div></div>
 
         <style>
-            .h1 {
-                padding-top: 20px;
-                padding-bottom: 20px;
-                text-align: center;
+            /* make keyframes that tell the start state and the end state of our object */
+
+            @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+            @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+            @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+            .fade-in {
+                opacity:0;  /* make things invisible upon start */
+                -webkit-animation:fadeIn ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+                -moz-animation:fadeIn ease-in 1;
+                animation:fadeIn ease-in 1;
+
+                -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+                -moz-animation-fill-mode:forwards;
+                animation-fill-mode:forwards;
+
+                -webkit-animation-duration:1s;
+                -moz-animation-duration:1s;
+                animation-duration:1s;
+            }
+
+            .fade-in.one {
+                -webkit-animation-delay: 0.4s;
+                -moz-animation-delay: 0.4s;
+                animation-delay: 0.4s;
+            }
+
+            .fade-in.two {
+                -webkit-animation-delay: 1.2s;
+                -moz-animation-delay:1.2s;
+                animation-delay: 1.2s;
+            }
+
+            .fade-in.three {
+                -webkit-animation-delay: 1.6s;
+                -moz-animation-delay: 1.6s;
+                animation-delay: 1.6s;
+            }
+
+            html,body{
+                color:rgba(255, 255, 255, 0.98);
+                font-family: 'MS Gothic';
+                background-image:linear-gradient(rgba(0, 0,0, 0.3), rgba(0, 0, 0, 0.3)),url("iceberg-wallpaper-background-10447-10616-hd-wallpapers.jpg");
+                background-image-repeat: no-repeat;
             }
             .input {
                 width: 100px;
-                margin-left: 8px;
             }
             .b1 {
-                margin-left: 10px;
-                margin-bottom: 50px;
+                margin-top: 38px;
+                margin-bottom: 40px;
             }
             .b2 {
-                margin-left: 6px;
-                margin-bottom: 50px;
+                margin-top: 38px;
+                margin-bottom: 40px;
             }
             .b3 {
                 margin-left: 10px;
@@ -95,7 +141,9 @@
             .w3-btn {
                 width: 120px;
             }
-
+            .btn btn-primary {
+                top: 50px;
+            }
         </style>
 
 
