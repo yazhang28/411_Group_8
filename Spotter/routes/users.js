@@ -292,6 +292,9 @@ router.get('/db/:artist', function(req, res, next) {
                             data.push(spotifyTrack.tracks.items[0].id);
                             return data;
 
+                        })
+                        .catch(function(err) {
+                            console.log('Error retrieving all IDs for ' + artistName);
                         });
 
                 })
@@ -315,6 +318,9 @@ router.get('/db/:artist', function(req, res, next) {
                             data.push(spotifyTrack.tracks.items[0].id);
                             return data;
 
+                        })
+                        .catch(function(err) {
+                            console.log('Error retrieving all IDs for ' + artistName);
                         });
 
                 })
@@ -358,6 +364,9 @@ router.get('/db/:artist', function(req, res, next) {
                             return data;
 
                         })
+                        .catch(function(err) {
+                            console.log('Error retrieving all IDs for ' + artistName);
+                        });
 
                 })
                 .then(function(data) {
