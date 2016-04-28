@@ -95,20 +95,61 @@ app.get('/callback', function(req, res) {
 
                 ////////////////////////////
 
-                var topArtists = {
+                /* Dependencies */
+                var Promise = require('bluebird');
+                var reqP = Promise.promisifyAll(require('request-promise'));
+
+
+                var getTopArtists = {
                     url: 'https://api.spotify.com/v1/me/top/artists?limit=3',
                     headers: {'Authorization': 'Bearer ' + access_token},
                     json: true
                 };
 
-                request.get(topArtists, function (error, response, body) {
-                    top3 = body.items;
 
-                    for (var i = 0; i < 3; i++) {
-                        console.log(top3[i].name);
-                    }
+                //request.get(topArtists, function (error, response, body) {
+                //    var top3 = body.items;
+                //
+                //    for (var i = 0; i < 3; i++) {
+                //        console.log(top3[i].name);
+                //    }
+                //
+                //});
 
-                });
+                reqP(getTopArtists)
+                    .then(function(topResults) {
+
+                        var top3 = topResults.items;
+
+                        for (var i = 0; i < 3; i++) {
+                            console.log(top3[i].name);
+                        }
+
+                        return top3;
+
+                    })
+                    .then(function(top3) {
+
+                        var postTopArtists = {
+                            method: 'POST',
+                            url: 'http://localhost:3000/users/db/userTop',
+                            form: {
+                                topArtists: top3
+                            }
+                        };
+
+                        return reqP(postTopArtists)
+                            .then(function(results) {
+                                console.log(results);
+                            });
+                    })
+                    .catch(function(err) {
+                        throw err;
+                    });
+
+
+
+
                 /////////////////////////////
 
                 var options = {
