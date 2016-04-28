@@ -131,6 +131,7 @@
                 margin-bottom: 40px;
             }
             .b2 {
+                color: white;
                 margin-top: 38px;
                 margin-bottom: 40px;
             }
@@ -143,6 +144,37 @@
             }
             .btn btn-primary {
                 top: 50px;
+            }
+            .loginStuff {
+                color: white;
+                background-color: rgba(0, 0, 0, 0.5);
+                font-family: "MS Gothic";
+                border-radius: 30px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                padding-top: 20px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 20px;
+                background-position: center;
+            }
+            .container {
+                text-align: center;
+            }
+            p {
+                font-family: "MS Gothic";
+                font-weight: bold;
+                font-size: 50px;
+                border-radius: 25px;
+                background-color: rgba(154, 177, 179, 1);
+                width: 40%;
+                padding-left: 10px;
+                margin-left: 50px;
+                text-align: center;
+            }
+            .media {
+                text-align: left;
+                margin-left: 280px;
             }
         </style>
 
@@ -181,6 +213,7 @@
 
 <body>
 <!--<input type="button" onclick="getTrack()" value="Click Me!">-->
+<div class="loginStuff">
 <div class="container">
     <div id="login">
         <h1></h1>
@@ -196,7 +229,7 @@
 </div>
 
 <script id="user-profile-template" type="text/x-handlebars-template">
-    <h1>Login Successful!</h1>
+    <p>Login Successful!</p>
     <div class="media">
         <div class="pull-left">
             <img class="media-object" width="150" src="{{images.0.url}}" />
@@ -212,6 +245,7 @@
                 <dt>Country</dt><dd>{{country}}</dd>
             </dl>
         </div>
+    </div>
     </div>
 </script>
 
