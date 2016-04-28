@@ -38,8 +38,8 @@
         <input class="input" type="text" placeholder='Artist name' name="name" id="name" ng-model="name" value="name">
         <button class="b1 w3-btn w3-amber w3-hover-black w3-round w3-tiny" ng-click="getArtist(name)">Search</button>
         <button class="b2 w3-btn w3-amber w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
-        <ul>
-            <li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.bio}}</li>
+        <ul id="noBullets">
+            <li style="text-align: left; color: whitesmoke; font-weight: bold" ng-repeat="name in artists"><span>{{name.artist}} Plays: {{name.popularity}} {{name.bio}}</span></li>
         </ul>
 
         <div style="background-color: rgba(183, 174, 173, 0.5); border-radius: 12px; padding-top: 5px; padding-left: 5px; padding-right: 5px">
@@ -131,6 +131,7 @@
                 margin-bottom: 40px;
             }
             .b2 {
+                color: white;
                 margin-top: 38px;
                 margin-bottom: 40px;
             }
@@ -143,6 +144,45 @@
             }
             .btn btn-primary {
                 top: 50px;
+            }
+            .loginStuff {
+                color: white;
+                background-color: rgba(0, 0, 0, 0.5);
+                font-family: "MS Gothic";
+                border-radius: 30px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                padding-top: 20px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 20px;
+                background-position: center;
+            }
+            .container {
+                text-align: center;
+            }
+            p {
+                font-family: "MS Gothic";
+                font-weight: bold;
+                font-size: 50px;
+                border-radius: 25px;
+                background-color: rgba(154, 177, 179, 1);
+                /*width: 40%;*/
+                padding-left: 10px;
+                margin-left: 50px;
+            }
+            li span {
+                background-color: rgba(183, 174, 173, 0.5);
+                margin: 5px;
+                padding-left: 2px;
+                padding-right:500px;
+            }
+            #noBullets li {
+                list-style-type: none;
+            }
+            .media {
+                text-align: left;
+                margin-left: 280px;
             }
         </style>
 
@@ -181,6 +221,7 @@
 
 <body>
 <!--<input type="button" onclick="getTrack()" value="Click Me!">-->
+<div class="loginStuff">
 <div class="container">
     <div id="login">
         <h1></h1>
@@ -196,8 +237,8 @@
 </div>
 
 <script id="user-profile-template" type="text/x-handlebars-template">
-    <h1>Login Successful!</h1>
-    <div class="media">
+    <p style="padding-left:55px"><span class="fade-in one">Login Successful!</span></p>
+    <div class="media fade-in three">
         <div class="pull-left">
             <img class="media-object" width="150" src="{{images.0.url}}" />
         </div>
@@ -212,6 +253,7 @@
                 <dt>Country</dt><dd>{{country}}</dd>
             </dl>
         </div>
+    </div>
     </div>
 </script>
 
