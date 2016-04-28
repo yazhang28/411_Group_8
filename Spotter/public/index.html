@@ -42,7 +42,7 @@
             <li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.bio}}</li>
         </ul>
 
-        <div style="background-color: rgba(183, 174, 173, 0.5); border-radius: 25px; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+        <div style="background-color: rgba(183, 174, 173, 0.5); border-radius: 12px; padding-top: 5px; padding-left: 5px; padding-right: 5px">
         <uib-tabset style="color: white;" active="active" >
 
             <uib-tab  index="0" select="tabChanged(0)" heading="Danceability"><span class=" fade-in one">Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.</span></uib-tab>
@@ -54,7 +54,7 @@
         </uib-tabset>
         <br>
 
-        <div style="text-align: center;">
+        <div class="fade-in three" style="text-align: center;">
         <d3-bars data="d3Data" label="title" on-click="d3OnClick(item)"></d3-bars>
 
         <br>
@@ -143,14 +143,6 @@
             }
             .btn btn-primary {
                 top: 50px;
-            }
-            .uib-tabs .uib-tabs-nav {
-                text-align: center;
-            }
-
-            .uib-tabs .uib-tabs-nav li {
-                float: none !important;
-                display: inline-block;
             }
         </style>
 
