@@ -35,7 +35,7 @@
         <button class="b2 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getAllArtists()">Show All Artists</button>
 
         <ul>
-            <li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.energy}} {{name.speechiness}}</li>
+            <li ng-repeat="name in artists">{{name.artist}} Plays: {{name.popularity}} {{name.bio}}</li>
         </ul>
 
 
@@ -65,6 +65,9 @@
         <input type="text" ng-model="d3Data[2].score"></input>
         <button class="b3 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getArtistData(2)">Update</button>
         <br>
+        <!--<span contenteditable="true" ng-bind="d3Data[2].title"> </span>-->
+        <button class="b3 w3-btn w3-dark-grey w3-hover-black w3-round w3-tiny" ng-click="getTop3()">Get My Top 3</button>
+        <br>
 
 
         <style>
@@ -72,6 +75,10 @@
                 padding-top: 20px;
                 padding-bottom: 20px;
                 text-align: center;
+            }
+            .input {
+                width: 100px;
+                margin-left: 8px;
             }
             .b1 {
                 margin-left: 10px;
@@ -88,11 +95,7 @@
             .w3-btn {
                 width: 120px;
             }
-            .input {
-                width: 100px;
-                margin-left: 8px;
-                margin-bottom: 0px;
-            }
+
         </style>
 
 

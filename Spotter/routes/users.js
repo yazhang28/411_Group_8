@@ -22,7 +22,16 @@ var track = new Schema({
 }, {
     strict: 'throw' //throw error when invalid track attempted
 });
+
+var userData = new Schema({
+    topArtists: []
+
+}, {
+    strict: 'throw' //throw error when invalid track attempted
+});
+
 var tune = mongoose.model('tune', track);
+var userTop = mongoose.model('userTop', userData);
 
 var LastFmNode = require('lastfm').LastFmNode;
 
@@ -58,7 +67,17 @@ router.post('/db', function(req, res, next) {
     tune1.save(function (err) {
         if (err) { console.log(err);}
         else {
-            res.json({message: 'Successful posting!'});
+            res.json({message: 'Successful posting'});
+        }
+    });
+});
+
+router.post('/db/userTop', function(req, res, next) {
+    var userTop1 = new userTop(req.body);
+    userTop1.save(function (err) {
+        if (err) { console.log(err);}
+        else {
+            res.json({message: 'Successful top posting'});
         }
     });
 });
@@ -71,11 +90,9 @@ router.get('/db', function(req, res, next) {
 
 });
 
+router.get('/db/userTop', function(req, res, next) {
 
-router.get('/db/energy/:artist', function(req, res, next) {
-
-    tune.find({}, function (err, results) {
-        console.log('got to users.js');
+    userTop.find({}, function (err, results) {
         res.json(results);
     });
 
@@ -367,12 +384,18 @@ router.get('/db/:artist', function(req, res, next) {
                         }
                     };
 
-                    //request(options, function (error, response, body) {
-                    //    if (error) throw new Error(error);
-                    //
-                    //    console.log(body);
-                    //});
+                    request(options, function (error, response, body) {
+                        if (error) throw new Error(error);
 
+                        console.log(body);
+                    });
+
+                })
+                .then(function() {
+
+                    tune.find({artist: req.params.artist}, function (err, results) {
+                        res.json(results);
+                    });
 
                 })
                 .catch(function(err) {

@@ -41,7 +41,7 @@
                             //based on tab index, display designated data to screen
 
                             if ($scope.currentTab == 0) {
-                                $scope.d3Data[i].score = Math.round(response.data[0].danceability * 100);
+                                $scope.d3Data[i].score = Math.round(response.data[0].danceability * 90);
                             }
 
                             if ($scope.currentTab == 1) {
@@ -49,7 +49,7 @@
                             }
 
                             if ($scope.currentTab == 2) {
-                                $scope.d3Data[i].score = Math.round(response.data[0].speechiness * 100);
+                                $scope.d3Data[i].score = Math.round(response.data[0].speechiness * 150);
                             }
 
                             if ($scope.currentTab == 3) {
@@ -83,8 +83,25 @@
                     $http.get('http://localhost:3000/users/db/' + name)
                         .then(function (response) {
                             $scope.artists = response.data;
-                        })
+                        });
                 }
+            };
+
+            $scope.getTop3 = function() {
+
+                $http.get('http://localhost:3000/users/db/userTop')
+                    .then(function (response) {
+
+                        $scope.d3Data[0].score = response.data[0].topArtists[0].name;
+                        $scope.d3Data[1].score = 'Tom Petty'; // hard coded since J. Cole (second top) is not fully in Spotify DB
+                        $scope.d3Data[2].score = response.data[0].topArtists[2].name;
+
+                        $scope.getArtistData(0);
+                        $scope.getArtistData(1);
+                        $scope.getArtistData(2);
+
+                    });
+
             };
 
 
